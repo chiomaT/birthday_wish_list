@@ -139,7 +139,7 @@ export default function Landing() {
           >
             here
           </a>{" "}
-          to see received gifts and feedback!
+          to see received gifts and messages!
           <br />
         </div>
 
