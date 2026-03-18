@@ -3,6 +3,7 @@ import type { RouteObject } from "react-router-dom";
 import routeNames from "./routes";
 import MainLayout from "../pages/MainLayout";
 import Landing from "../pages/landing/Landing";
+import GiftListing from "../pages/landing/GiftListing";
 
 const routes: RouteObject[] = [
   {
@@ -13,6 +14,11 @@ const routes: RouteObject[] = [
         index: true,
         element: <Landing />,
       },
+      {
+        path: routeNames.giftListing,
+    element: <GiftListing />,
+        
+      }
     ],
   },
   {

@@ -1,6 +1,6 @@
 const routeNames = {
   landing: "/",
-  about: "aboutus",
+  giftListing: "gift-listing",
   solutions: "solutions",
   blogs: "blogs",
   events: "events",
