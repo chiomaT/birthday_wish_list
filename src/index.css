@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --font-primary: "Public Sans", "sans-serif";
+  --font-secondary: "Public Sans", "sans-serif";
+  --font-heading: "Bricolage Grotesque", "sans-serif";
+  --breakpoint-3xl: 120rem;
+  --color-primary: #176a3b;
+  --color-secondary: #433e25;
+  --color-secondary-light: #f3f1e8;
+  --color-primary-light: #e6f2eb;
+  --color-white: #ffffff;
+  --color-text-primary: #2c2919;
+  --color-text-secondary: #1d2939;
+}
