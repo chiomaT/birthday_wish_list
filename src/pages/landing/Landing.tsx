@@ -9,7 +9,7 @@ type Gift = {
   link?: string;
   cartLink?: string;
   taken?: boolean;
-  isPrayer?: boolean; 
+  isPrayer?: boolean;
 };
 
 const birthdayDate = new Date("2026-03-20");
@@ -19,7 +19,7 @@ const initialGifts: Gift[] = [
   {
     name: "Clear my Shein cart",
     price: "$200 - $400",
-    link: "https://www.shein.com/cart",
+    cartLink: "https://www.shein.com/cart",
   },
   { name: "Spa Day", price: "₦40,000 - ₦70,000" },
   { name: "Cake", price: "₦20,000 - ₦40,000" },
@@ -30,8 +30,8 @@ const initialGifts: Gift[] = [
   },
   {
     name: "Clear my Skin care cart",
-    price: "₦100,000 - ₦200,000",
-    link: "https://www.shein.com/cart",
+    price: "₦50,000 - ₦150,000",
+    cartLink: "https://teeka4.com/cart/",
   },
   {
     name: "A new iPhone (my current one is struggling (bad screen) 😅)",
@@ -48,30 +48,31 @@ export default function Landing() {
   const [showPrayerForm, setShowPrayerForm] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [prayerText, setPrayerText] = useState("");
 
   // Countdown timer
-useEffect(() => {
-  const timer = setInterval(() => {
-    const now = new Date().getTime();
-    const diff = birthdayDate.getTime() - now;
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const diff = birthdayDate.getTime() - now;
 
-    if (diff <= 0) {
-      setCountdown("It's my birthday! 🎉");
-      confetti({ particleCount: 200, spread: 120, origin: { y: 0.6 } });
-      clearInterval(timer);
-      return;
-    }
+      if (diff <= 0) {
+        setCountdown("It's my birthday! 🎉");
+        confetti({ particleCount: 200, spread: 120, origin: { y: 0.6 } });
+        clearInterval(timer);
+        return;
+      }
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((diff / (1000 * 60)) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
 
-    setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-  }, 1000);
+      setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    }, 1000);
 
-  return () => clearInterval(timer);
-}, []);
+    return () => clearInterval(timer);
+  }, []);
 
   const copyAccount = () => {
     navigator.clipboard.writeText("7039379012");
@@ -79,14 +80,31 @@ useEffect(() => {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  const handlePrayerSubmit = () => {
+  const handlePrayerSubmit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setShowPrayerForm(false);
-      setToastMessage("Prayer received! Thank you! I love you so much 💌");
-      setTimeout(() => setToastMessage(null), 4000);
-    }, 2000);
+    try {
+      const res = await fetch("https://formspree.io/f/mqadkkre", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prayer: prayerText,
+        }),
+      });
+
+      if (res.ok) {
+        setLoading(false);
+        setToastMessage("Prayer received! Thank you!, I love you 💌");
+        setPrayerText("");
+        setShowPrayerForm(false);
+      }
+    } catch (error) {
+      setToastMessage("Something went wrong. Please try again.");
+      console.log(error);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -109,14 +127,15 @@ useEffect(() => {
 
         {/* Subtle notice about checking gifts */}
         <div className="mb-6 text-center text-gray-600">
-          💌 Feel free to check back here to see received gifts and feedback!{" "}
-          <br />
+          Feel free to check back{" "}
           <a
             href={routeNames.giftListing}
             className="text-pink-500 underline hover:text-pink-600"
           >
-            View all gifts
-          </a>
+            here
+          </a>{" "}
+          to see received gifts and feedback!
+          <br />
         </div>
 
         {/* Gift Grid */}
@@ -135,9 +154,9 @@ useEffect(() => {
               {gift.isPrayer ? (
                 <button
                   onClick={() => setShowPrayerForm(true)}
-                  className="mt-4 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 mb-2"
+                  className="mt-4 bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-60 mb-2"
                 >
-                  Let me pray for me 💌
+                  Let me pray for me
                 </button>
               ) : (
                 <button
@@ -164,6 +183,11 @@ useEffect(() => {
           <div className="bg-white p-6 rounded-xl w-96 relative">
             <Heading level={4}>{selectedGift.name}</Heading>
             <Paragraph className="mt-2">Budget: {selectedGift.price}</Paragraph>
+            {(selectedGift.link || selectedGift.cartLink) && (
+              <Paragraph className="text-sm text-gray-500 mt-2">
+                You can either buy it yourself or send cash, thank you!
+              </Paragraph>
+            )}
             {selectedGift.link && (
               <a
                 href={selectedGift.link}
@@ -181,7 +205,7 @@ useEffect(() => {
                 rel="noreferrer"
                 className="block mt-2 text-blue-600 underline"
               >
-                See item(s)
+                See cart
               </a>
             )}
             <div className="mt-4 border-t pt-4">
@@ -214,6 +238,8 @@ useEffect(() => {
               className="w-full border mt-4 p-3 rounded-lg"
               rows={4}
               placeholder="Write your prayer or birthday wish..."
+              value={prayerText}
+              onChange={(e) => setPrayerText(e.target.value)}
             />
             <button
               onClick={handlePrayerSubmit}
