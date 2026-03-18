@@ -77,35 +77,40 @@ export default function Landing() {
   const copyAccount = () => {
     navigator.clipboard.writeText("7039379012");
     setToastMessage("Copied! Thank you so much, I LOVE you 💖");
-    setTimeout(() => setToastMessage(null), 4000);
+    setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handlePrayerSubmit = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("https://formspree.io/f/mqadkkre", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prayer: prayerText,
-        }),
-      });
+    const handlePrayerSubmit = async () => {
+     setLoading(true);
+     try {
+       const res = await fetch("https://formspree.io/f/mqadkkre", {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+           prayer: prayerText,
+         }),
+       });
 
-      if (res.ok) {
-        setLoading(false);
-        setToastMessage("Prayer received! Thank you!, I love you 💌");
-        setPrayerText("");
-        setShowPrayerForm(false);
-      }
-    } catch (error) {
-      setToastMessage("Something went wrong. Please try again.");
-      console.log(error);
-    }
-
-    setLoading(false);
-  };
+       if (res.ok) {
+         setToastMessage("Prayer received! Thank you!, I love you 💌");
+         setPrayerText("");
+         setShowPrayerForm(false);
+         // Move setLoading(false) here inside the success block
+         setLoading(false);
+         setTimeout(() => setToastMessage(null), 2000);
+       } else {
+         // Handle non-OK responses gracefully, perhaps with a different error toast
+         setToastMessage("Failed to send prayer. Please try again.");
+         setLoading(false); // Make sure loading is false on failure too
+       }
+     } catch (error) {
+       setToastMessage("Something went wrong. Please try again.");
+       console.log(error);
+       setLoading(false); // Make sure loading is false on error
+     }
+   };
 
   return (
     <div className="min-h-screen bg-pink-50 p-6">
