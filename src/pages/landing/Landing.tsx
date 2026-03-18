@@ -97,13 +97,11 @@ export default function Landing() {
          setToastMessage("Prayer received! Thank you!, I love you 💌");
          setPrayerText("");
          setShowPrayerForm(false);
-         // Move setLoading(false) here inside the success block
          setLoading(false);
          setTimeout(() => setToastMessage(null), 2000);
        } else {
-         // Handle non-OK responses gracefully, perhaps with a different error toast
          setToastMessage("Failed to send prayer. Please try again.");
-         setLoading(false); // Make sure loading is false on failure too
+         setLoading(false); 
        }
      } catch (error) {
        setToastMessage("Something went wrong. Please try again.");
